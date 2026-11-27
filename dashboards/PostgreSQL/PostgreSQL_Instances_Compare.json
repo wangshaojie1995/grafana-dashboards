@@ -55,65 +55,7 @@
   "graphTooltip": 1,
   "id": null,
   "iteration": 1656510412124,
-  "links": [
-    {
-      "icon": "doc",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [
-        "Home"
-      ],
-      "targetBlank": false,
-      "title": "Home",
-      "type": "link",
-      "url": "/graph/d/pmm-home/home-dashboard"
-    },
-    {
-      "icon": "dashboard",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [
-        "Query Analytics"
-      ],
-      "targetBlank": false,
-      "title": "Query Analytics",
-      "type": "link",
-      "url": "/graph/d/pmm-qan/pmm-query-analytics"
-    },
-    {
-      "asDropdown": true,
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [
-        "PostgreSQL"
-      ],
-      "targetBlank": false,
-      "title": "PostgreSQL",
-      "type": "dashboards"
-    },
-    {
-      "asDropdown": true,
-      "includeVars": false,
-      "keepTime": true,
-      "tags": [
-        "Services"
-      ],
-      "targetBlank": false,
-      "title": "Services",
-      "type": "dashboards"
-    },
-    {
-      "asDropdown": true,
-      "includeVars": false,
-      "keepTime": true,
-      "tags": [
-        "PMM"
-      ],
-      "targetBlank": false,
-      "title": "PMM",
-      "type": "dashboards"
-    }
-  ],
+  "links": [],
   "liveNow": false,
   "panels": [
     {
@@ -2131,7 +2073,7 @@
           "steppedLine": false,
           "targets": [
             {
-              "expr": "avg by (service_name,datname) (rate(pg_stat_database_blk_read_time{service_name=~\"$service_name\",datname!~\"template.*|postgres\",datname=~\"$database\"}[$interval]) or\nirate(pg_stat_database_blk_read_time{service_name=~\"$service_name\",datname=~\"$database\",datname!~\"template.*|postgres\"}[5m]))",
+              "expr": "avg by (service_name,datname) (rate(pg_stat_database_blk_read_time{service_name=~\"$service_name\",datname!~\"template.*\",datname=~\"$database\"}[$interval]) or\nirate(pg_stat_database_blk_read_time{service_name=~\"$service_name\",datname=~\"$database\",datname!~\"template.*\"}[5m]))",
               "format": "time_series",
               "interval": "$interval",
               "intervalFactor": 1,
@@ -2139,7 +2081,7 @@
               "refId": "A"
             },
             {
-              "expr": "avg by (service_name,datname) (rate(pg_stat_database_blk_write_time{service_name=~\"$service_name\",datname!~\"template.*|postgres\",datname=~\"$database\"}[$interval]) or\nirate(pg_stat_database_blk_write_time{service_name=~\"$service_name\",datname=~\"$database\",datname!~\"template.*|postgres\"}[5m]))",
+              "expr": "avg by (service_name,datname) (rate(pg_stat_database_blk_write_time{service_name=~\"$service_name\",datname!~\"template.*\",datname=~\"$database\"}[$interval]) or\nirate(pg_stat_database_blk_write_time{service_name=~\"$service_name\",datname=~\"$database\",datname!~\"template.*\"}[5m]))",
               "format": "time_series",
               "interval": "$interval",
               "intervalFactor": 1,
@@ -4134,7 +4076,7 @@
           "value": "$__all"
         },
         "datasource": "Metrics",
-        "definition": "label_values(pg_stat_database_tup_fetched{service_name=~\"$service_name\",datname!~\"template.*|postgres\"},datname)",
+        "definition": "label_values(pg_stat_database_tup_fetched{service_name=~\"$service_name\",datname!~\"template.*\"},datname)",
         "hide": 2,
         "includeAll": true,
         "label": "Database",
@@ -4142,7 +4084,7 @@
         "name": "database",
         "options": [],
         "query": {
-          "query": "label_values(pg_stat_database_tup_fetched{service_name=~\"$service_name\",datname!~\"template.*|postgres\"},datname)",
+          "query": "label_values(pg_stat_database_tup_fetched{service_name=~\"$service_name\",datname!~\"template.*\"},datname)",
           "refId": "Metrics-database-Variable-Query"
         },
         "refresh": 1,

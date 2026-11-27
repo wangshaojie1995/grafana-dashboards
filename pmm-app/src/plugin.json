@@ -2,23 +2,33 @@
   "type": "app",
   "name": "PMM",
   "id": "pmm-app",
-
   "info": {
     "description": "Percona Management and Monitoring dashboards",
     "author": {
       "name": "Percona"
     },
-    "keywords": ["percona", "query analytics", "pmm", "qan"],
+    "keywords": [
+      "percona",
+      "query analytics",
+      "pmm",
+      "qan"
+    ],
     "links": [
-      { "name": "Project site", "url": "https://github.com/percona/pmm" },
-      { "name": "AGPL-3 License", "url": "https://github.com/percona/pmm/blob/main/LICENSE" }
+      {
+        "name": "Project site",
+        "url": "https://github.com/percona/pmm"
+      },
+      {
+        "name": "AGPL-3 License",
+        "url": "https://github.com/percona/pmm/blob/main/LICENSE"
+      }
     ],
     "logos": {
       "small": "img/pmm-logo.svg",
       "large": "img/pmm-logo.svg"
     },
-    "version": "2.32.0",
-    "updated": "2022-11-07"
+    "version": "3.4.1",
+    "updated": "2025-09-30"
   },
   "includes": [
     {
@@ -159,11 +169,6 @@
     },
     {
       "type": "dashboard",
-      "name": "MySQL TokuDB Details",
-      "path": "dashboards/MySQL/MySQL_TokuDB_Details.json"
-    },
-    {
-      "type": "dashboard",
       "name": "MySQL InnoDB Details",
       "path": "dashboards/MySQL/MySQL_InnoDB_Details.json"
     },
@@ -180,7 +185,7 @@
     {
       "type": "dashboard",
       "name": "NUMA Details",
-      "path":"dashboards/OS/NUMA_Details.json"
+      "path": "dashboards/OS/NUMA_Details.json"
     },
     {
       "type": "dashboard",
@@ -192,7 +197,8 @@
       "name": "MySQL Group Replication Summary",
       "path": "dashboards/MySQL/MySQL_Group_Replication_Summary.json"
     },
-    { "type": "dashboard",
+    {
+      "type": "dashboard",
       "name": "Network Details",
       "path": "dashboards/OS/Network_Details.json"
     },
@@ -290,11 +296,85 @@
       "type": "dashboard",
       "name": "Environment Overview",
       "path": "dashboards/Experimental/Environments_Overview.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "MongoDB PBM Details",
+      "path": "dashboards/MongoDB/MongoDB_PBM_Details.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "PostgreSQL Top Queries",
+      "path": "dashboards/PostgreSQL/PostgreSQL_Top_Queries.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "PostgreSQL Instances Overview Extended",
+      "path": "dashboards/PostgreSQL/PostgreSQL_Overview_Extended.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "PostgreSQL Checkpoints, Buffers and WAL Usage",
+      "path": "dashboards/MongoDB/PostgreSQL_Checkpoints_Buffers_WAL_Usage.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "PostgreSQL Patroni Details",
+      "path": "dashboards/PostgreSQL/PostgreSQL_Patroni_Details.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Clients",
+      "path": "dashboards/Valkey/Valkey_Clients.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Cluster Details",
+      "path": "dashboards/Valkey/Valkey_ClusterDetails.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Command Details",
+      "path": "dashboards/Valkey/Valkey_CommandDetails.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Load",
+      "path": "dashboards/Valkey/Valkey_Load.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Memory",
+      "path": "dashboards/Valkey/Valkey_Memory.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Network",
+      "path": "dashboards/Valkey/Valkey_Network.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Overview",
+      "path": "dashboards/Valkey/Valkey_Overview.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Persistence Details",
+      "path": "dashboards/Valkey/Valkey_PersistenceDetails.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Replication",
+      "path": "dashboards/Valkey/Valkey_Replication.json"
+    },
+    {
+      "type": "dashboard",
+      "name": "Valkey/Redis Slowlog",
+      "path": "dashboards/Valkey/Valkey_Slowlog.json"
     }
   ],
-
   "dependencies": {
-    "grafanaDependency": ">=7.x.x",
+    "grafanaDependency": ">=11.x.x",
     "plugins": []
   }
 }

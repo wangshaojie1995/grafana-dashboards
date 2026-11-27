@@ -56,88 +56,7 @@
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
   "id": null,
-  "links": [
-    {
-      "icon": "doc",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [
-        "Home"
-      ],
-      "targetBlank": false,
-      "title": "Home",
-      "type": "link",
-      "url": "/graph/d/pmm-home/home-dashboard"
-    },
-    {
-      "icon": "dashboard",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [
-        "Query Analytics"
-      ],
-      "targetBlank": false,
-      "title": "Query Analytics",
-      "type": "link",
-      "url": "/graph/d/pmm-qan/pmm-query-analytics"
-    },
-    {
-      "icon": "bolt",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [
-        "Compare"
-      ],
-      "targetBlank": false,
-      "title": "Compare",
-      "type": "link",
-      "url": "/graph/d/mongodb-instance-compare/mongodb-instances-compare"
-    },
-    {
-      "asDropdown": true,
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [
-        "MongoDB"
-      ],
-      "targetBlank": false,
-      "title": "MongoDB",
-      "type": "dashboards"
-    },
-    {
-      "asDropdown": true,
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [
-        "MongoDB_HA"
-      ],
-      "targetBlank": false,
-      "title": "HA",
-      "type": "dashboards"
-    },
-    {
-      "asDropdown": true,
-      "includeVars": false,
-      "keepTime": true,
-      "tags": [
-        "Services"
-      ],
-      "targetBlank": false,
-      "title": "Services",
-      "type": "dashboards"
-    },
-    {
-      "asDropdown": true,
-      "includeVars": false,
-      "keepTime": true,
-      "tags": [
-        "PMM"
-      ],
-      "targetBlank": false,
-      "title": "PMM",
-      "type": "dashboards"
-    }
-  ],
+  "links": [],
   "liveNow": false,
   "panels": [
     {
@@ -388,10 +307,12 @@
       "targets": [
         {
           "datasource": "Metrics",
-          "expr": "avg by (service_name) (mongodb_mongod_metrics_repl_buffer_count{service_name=~\"$service_name\"})",
+          "editorMode": "code",
+          "expr": "avg by (service_name) (mongodb_ss_metrics_repl_buffer_apply_count{service_name=~\"$service_name\"}) or avg by (service_name) (mongodb_mongod_metrics_repl_buffer_count{service_name=~\"$service_name\"})",
           "interval": "$interval",
           "intervalFactor": 1,
           "legendFormat": "{{service_name}}",
+          "range": true,
           "refId": "A",
           "step": 300
         }
@@ -770,19 +691,23 @@
       "targets": [
         {
           "datasource": "Metrics",
-          "expr": "avg by (service_name) (mongodb_mongod_metrics_repl_buffer_size_bytes{service_name=~\"$service_name\"})",
+          "editorMode": "code",
+          "expr": "avg by (service_name) (mongodb_ss_metrics_repl_buffer_apply_sizeBytes{service_name=~\"$service_name\"}) or avg by (service_name) (mongodb_mongod_metrics_repl_buffer_size_bytes{service_name=~\"$service_name\"})",
           "interval": "$interval",
           "intervalFactor": 1,
           "legendFormat": "Used",
+          "range": true,
           "refId": "A",
           "step": 300
         },
         {
           "datasource": "Metrics",
-          "expr": "avg by (service_name) (mongodb_mongod_metrics_repl_buffer_max_size_bytes{service_name=~\"$service_name\"})",
+          "editorMode": "code",
+          "expr": "avg by (service_name) (mongodb_ss_metrics_repl_buffer_apply_maxSizeBytes{service_name=~\"$service_name\"}) or avg by (service_name) (mongodb_mongod_metrics_repl_buffer_max_size_bytes{service_name=~\"$service_name\"})",
           "interval": "$interval",
           "intervalFactor": 1,
           "legendFormat": "Max",
+          "range": true,
           "refId": "B",
           "step": 300
         }
@@ -983,7 +908,7 @@
           "refId": "A"
         }
       ],
-      "title": "Oplog Window",
+      "title": "Oplog Generation Rate",
       "type": "row"
     },
     {
@@ -1046,7 +971,7 @@
           "datasource": "Metrics",
           "editorMode": "code",
           "exemplar": true,
-          "expr": "avg by (service_name) (rate(mongodb_oplog_stats_wt_cache_bytes_written_from_cache{rs_state=\"1\",service_name=~\"$service_name\"})[$interval])",
+          "expr": "sum(increase(mongodb_oplog_stats_wt_cache_bytes_written_from_cache{service_name=~\"$service_name\"}[1h]))",
           "interval": "$interval",
           "legendFormat": "{{service_name}}",
           "range": true,
@@ -1078,118 +1003,6 @@
         {
           "decimals": 2,
           "format": "bytes",
-          "label": "",
-          "logBase": 1,
-          "min": 0,
-          "show": true
-        },
-        {
-          "format": "short",
-          "logBase": 1,
-          "show": false
-        }
-      ],
-      "yaxis": {
-        "align": false
-      }
-    },
-    {
-      "aliasColors": {},
-      "bars": false,
-      "dashLength": 10,
-      "dashes": false,
-      "datasource": "Metrics",
-      "decimals": 2,
-      "description": "Provides information about the contents of your oplog. The difference between the first and latest entries provides info data regarding which operations can possibly be repeated if necessary. ",
-      "editable": true,
-      "error": false,
-      "fieldConfig": {
-        "defaults": {
-          "unit": "h"
-        },
-        "overrides": []
-      },
-      "fill": 2,
-      "fillGradient": 0,
-      "grid": {
-        "leftLogBase": 1,
-        "leftMin": 0,
-        "rightLogBase": 1
-      },
-      "gridPos": {
-        "h": 8,
-        "w": 24,
-        "x": 0,
-        "y": 211
-      },
-      "hiddenSeries": false,
-      "id": 1553,
-      "legend": {
-        "alignAsTable": true,
-        "avg": true,
-        "current": false,
-        "max": true,
-        "min": true,
-        "show": true,
-        "sort": "avg",
-        "sortDesc": true,
-        "total": false,
-        "values": true
-      },
-      "lines": true,
-      "linewidth": 2,
-      "links": [],
-      "nullPointMode": "null",
-      "options": {
-        "alertThreshold": true
-      },
-      "paceLength": 10,
-      "percentage": false,
-      "pluginVersion": "9.2.20",
-      "pointradius": 5,
-      "points": false,
-      "renderer": "flot",
-      "repeat": "service_name",
-      "repeatDirection": "h",
-      "seriesOverrides": [],
-      "spaceLength": 10,
-      "stack": false,
-      "steppedLine": false,
-      "targets": [
-        {
-          "datasource": "Metrics",
-          "exemplar": true,
-          "expr": "avg by (node_name,service_name) ((mongodb_mongod_replset_oplog_head_timestamp - mongodb_mongod_replset_oplog_tail_timestamp{service_name=~\"$service_name\"}) / 3600)",
-          "interval": "",
-          "legendFormat": "{{service_name}}",
-          "refId": "A"
-        }
-      ],
-      "thresholds": [],
-      "timeRegions": [],
-      "title": "Oplog Window",
-      "tooltip": {
-        "msResolution": false,
-        "shared": true,
-        "sort": 5,
-        "value_type": "cumulative"
-      },
-      "type": "graph",
-      "x-axis": true,
-      "xaxis": {
-        "mode": "time",
-        "show": true,
-        "values": []
-      },
-      "y-axis": true,
-      "y_formats": [
-        "ms",
-        "short"
-      ],
-      "yaxes": [
-        {
-          "decimals": 2,
-          "format": "h",
           "label": "",
           "logBase": 1,
           "min": 0,

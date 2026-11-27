@@ -1,5 +1,322 @@
 # Changelog
 
+## 4.14.1
+
+### Features
+
+- Extract `Map` value type for `mapKey` filter in `getFilters` (#1694)
+
+### Fixes
+
+- Dependency updates
+  
+## 4.14.0
+
+### Features
+
+- Add FilterTime hint to enable multi-timestamp log filtering/sorting (#1642)
+- Skip OTel trace time range optimization when trace timestamp table does not exist (#1663)
+
+### Fixes
+
+- Dependency updates
+- Add separate columns for Resource/Scope/Log Attributes (#1560)
+- Fix panic when configuring datasource with numeric timeout values (#1559)
+
+## 4.13.0
+
+### Features
+
+- Support for hiding table names in ad-hoc filters (#1493)
+- Allow manual placement of ad-hoc filters (#1488)
+- Add support for Nullable(Enum8/16) column types (#1523)
+- Add dashboard variable to control AdHoc filter syntax (#1464)
+
+### Fixes
+
+- Fix generating query with column names containing colons (#1538)
+- Update config HTTPS language (#1537)
+- Dependency updates
+
+## 4.12.0
+
+### Features
+
+- Support log volume queries for the SQL editor. Note that this will only work for Grafana versions >= 12.4.0 (#1475)
+- Support columns with `.` in ad-hoc filters (#1481)
+
+### Fixes
+
+- Dependency updates
+
+## 4.11.4
+
+## Fixes
+
+- Fix view logs link in Explore and Dashboards (#1462)
+- Fix filter for map type LogLabels (#1456)
+- Temporarily disable slow JSON suggestions function (#1468)
+- Dependency updates
+
+## 4.11.3
+
+### Fixes
+
+- Fix config UI bugs (#1409) and update design (#1422)
+- Dependency updates
+
+## 4.11.2
+
+### Features
+
+- Second part of redesigned ClickHouse config page (behind newClickhouseConfigPageDesign) (#1387)
+
+### Fixes
+
+- Improved error classification to mark all ClickHouse errors as downstream errors, including errors wrapped in HTTP response bodies and multi-error chains (#1405)
+- Dependency updates
+
+## 4.11.1
+
+### Fixes
+
+- All Clickhouse errors are marked as downstream errors for Grafana (#1378)
+
+## 4.11.0
+
+### Features
+
+- Merge OpenTelemetry resource/scope/log attributes into a unified Labels column in Logs (#1369)
+- First part of redesigned ClickHouse config page with sidebar navigation and collapsible sections (behind newClickhouseConfigPageDesign) (#1370)
+
+### Fixes
+
+- Fix ad-hoc filter application with templated target tables (#1241)
+- Fix column sorting by formatting bytes in Grafana (#1352)
+- Fix events and links not displaying correctly for table view queries (#1345)
+- Dependency updates
+
+## 4.10.2
+
+### Fixes
+
+- Fix Ad-Hoc filters for variable datasources #1330
+- Fix switching between SQL Editor and Query Builder #1337
+- Fix large JSON objects + complex JSON types #1326
+- Configuration fixes related to row limit implementation #1294
+- Fix bug where switched to logs query type errored #1341
+- Dependency updates
+
+## 4.10.1
+
+### Fixes
+
+- Bump grafana/plugin-actions from ff169fa386880e34ca85a49414e5a0ff84c3f7ad to b788be6746403ff9bae26d5e800794f2a5620b4c (#1286)
+- Bump cspell from 9.0.2 to 9.1.1 (#1278)
+
+## 4.10.0
+
+### Features
+
+- Ad-hoc queries: Allow to filter by values inside the map (#1265)
+
+### Fixes
+
+- Fix ad-hoc filter application with templated target tables (#1241)
+- Dependency updates
+
+## 4.9.1
+
+### Fixes
+
+- Error logging fix
+
+## 4.9.0
+
+### Features
+
+- Add support for the Grafana `row_limit` [configuration setting](https://grafana.com/docs/grafana/latest/setup-grafana/configure-grafana/#row_limit).
+- Add support for kind, status, instrumentation library, links, events and state data for traces (#1043, #1208)
+- Cancel JSON paths query after 10s (#1206)
+- SQL Editor now suggests database, table, column, and function names while typing (#1204)
+- Add SQL Formatter button + shortcut for making long queries more readable in the editor (#1205)
+
+### Fixes
+
+- Fixed "run query" shortcut from running stale query (#1205)
+- Dependency updates
+
+## 4.8.2
+
+### Fixes
+
+- Dependency updates
+
+## 4.8.1
+
+### Fixes
+
+- Dependency updates
+
+## 4.8.0
+
+### Features
+
+- Enable CtrlCmd + Enter keyboard shortcut to Run Query (#1158)
+
+### Fixes
+
+- Refactor `MutateResponse` function and PDC dialler creation (#1155)
+- Refactor `clickhouse.Connect` to improve context cancellation handling (#1154)
+- Prevent usage of failed connections and improve connection management (#1156). Please note that following this change, the following limits will be set. Although we believe these limits are reasonable, you can adjust them in the datasource settings if needed:
+  - `MaxOpenConns` to 50.
+  - `MaxIdleConns` to 25.
+  - `ConnMaxLifetime` to 5 minutes.
+- Dependency updates
+
+## 4.7.0
+
+### Features
+
+- Add JSON column sub-paths to column selection in query builder
+- Added events support in trace detail view.(https://github.com/grafana/clickhouse-datasource/pull/1128)
+
+## 4.6.0
+
+### Features
+
+- Add support for new Variant, Dynamic, and JSON types (https://github.com/grafana/clickhouse-datasource/pull/1108)
+
+### Fixes
+
+- Optimized performance for log volumes processing using ClickHouse `multiSearchAny`
+
+## 4.5.1
+
+### Fixes
+
+- Dependency updates
+
+## 4.5.0
+
+### Features
+
+- Implemented log context for log queries
+- Added configuration options for log context columns
+- Queries parsed from the SQL editor will now attempt to re-map columns into their correct fields for Log and Trace queries.
+- Added support for IN operator in adhoc filters
+
+### Fixes
+
+- Fixed and enhanced the logic for parsing a query back into the query builder.
+
+## 4.4.0
+
+### Features
+
+- Added "Labels" column selector to the log query builder
+- Datasource OTel configuration will now set default table names for logs and traces.
+
+### Fixes
+
+- Added warning for when `uid` is missing in provisioned datasources.
+- Map filters in the query builder now correctly show the key instead of the column name
+- Updated and fixed missing `system.dashboards` dashboard in list of dashboards
+- Updated the duration value in example traces dashboard to provide useful information
+- Fix to display status codes from spans in trace queries (#950)
+
+## 4.3.2
+
+### Fixes
+
+- Optimized performance for types dependent on the JSON converter
+- Dependency updates
+
+## 4.3.1
+
+### Features
+
+- Added preset dashboard from `system.dashboards` table
+
+### Fixes
+
+- Fix trace start times in trace ID mode (#900)
+- Fixed OTel dashboard that waa failing to import (#908)
+
+## 4.3.0
+
+### Features
+
+- Added OpenTelemetry dashboard (#884)
+
+### Fixes
+
+- Fix support for LowCardinality strings (#857)
+- Update trace queries to better handle time fields (#890)
+- Dependency bumps
+
+## 4.2.0
+
+### Features
+
+- Added `$__dateTimeFilter()` macro for conveniently filtering a PRIMARY KEY composed of Date and DateTime columns.
+
+## 4.1.0
+
+### Features
+
+- Added the ability to define column alias tables in the config, which simplifies query syntax for tables with a known schema.
+
+## 4.0.8
+
+### Fixes
+
+- Fixed `IN` operator escaping the entire string (specifically with `Nullable(String)`), also added `FixedString(N)` (#830)
+- Fixed query builder filter editor on alert rules page (#828)
+
+## 4.0.7
+
+- Upgrade dependencies
+
+## 4.0.6
+
+### Fixes
+
+- Add support for configuring proxy options from context rather than environment variables (supported by updating `sqlds`) (#799)
+
+## 4.0.5
+
+### Fixes
+
+- Fixed converter regex for `Nullable(IP)` and `Nullable(String)`. It won't match to `Array(Nullable(IP))` or `Array(Nullable(String))` any more. (#783)
+- Updated `grafana-plugin-sdk-go` to fix a PDC issue. More details [here](https://github.com/grafana/grafana-plugin-sdk-go/releases/tag/v0.217.0) (#790)
+
+## 4.0.4
+
+### Fixes
+
+- Changed trace timestamp table from the constant `otel_traces_trace_id_ts` to a suffix `_trace_id_ts` applied to the current table name.
+
+## 4.0.3
+
+### Features
+
+- Added `$__fromTime_ms` macro that represents the dashboard "from" time in milliseconds using a `DateTime64(3)`
+- Added `$__toTime_ms` macro that represents the dashboard "to" time in milliseconds using a `DateTime64(3)`
+- Added `$__timeFilter_ms` macro that uses `DateTime64(3)` for millisecond precision time filtering
+- Re-added query type selector in dashboard view. This was only visible in explore view, but somehow it affects dashboard view, and so it has been re-added. (#730)
+- When OTel is enabled, Trace ID queries now use a skip index to optimize exact ID lookups on large trace datasets (#724)
+
+### Fixes
+
+- Fixed performance issues caused by `$__timeFilter` using a `DateTime64(3)` instead of `DateTime` (#699)
+- Fixed trace queries from rounding span durations under 1ms to `0` (#720)
+- Fixed AST error when including Grafana macros/variables in SQL (#714)
+- Fixed empty builder options when switching from SQL Editor back to Query Editor
+- Fix SQL Generator including "undefined" in `FROM` when database isn't defined
+- Allow adding spaces in multi filters (such as `WHERE .. IN`)
+- Fixed missing `AND` keyword when adding a filter to a Trace ID query
+
 ## 4.0.2
 
 ### Fixes
@@ -48,10 +365,12 @@ Version 4.0.0 contains major revisions to the query builder and datasource confi
 - Added column hints, which offers better linking across query components when working with columns and filters. For example, a filter can be added for the `Time` column, even without knowing what the time column name is yet. This enables better SQL generation that is "aware" of a column's intended use.
 
 ### Plugin Backend
+
 - Added migration logic for `v3` configs going to `v4+`. This is applied when the config is loaded when building a database connection.
 - `$__timeFilter`, `$__fromTime`, and `$__toTime` macros now convert to `DateTime64(3)` for better server-side type conversion. Also enables millisecond precision time range filtering.
 
 #### Datasource Configuration
+
 - Added migration script for `v3.x` configurations to `v4+`. This runs automatically when opening/saving the datasource configuration.
 - Renamed config value `server` to `host`.
 - Renamed config value `timeout` to the more specific `dial_timeout`.

@@ -1,6 +1,5 @@
 import React from 'react';
-import { mount } from 'enzyme';
-import { dataTestId } from 'shared/core/test.utils';
+import { render } from '@testing-library/react';
 import { Databases } from 'shared/core';
 import { QueryAnalyticsProvider } from 'pmm-qan/panel/provider/provider';
 import { QueryDimension, DetailsTabs, RawTime } from 'pmm-qan/panel/provider/provider.types';
@@ -9,11 +8,15 @@ import { getChartDataFromHistogramItems } from './Metrics.utils';
 
 jest.mock('shared/components/helpers/notification-manager');
 jest.mock('antd/es/tooltip', () => <div className="tooltip" />);
+jest.mock('../../BarChart/BarChart', () => ({
+  BarChart: () => 'BarChart',
+}));
 
 jest.mock('./hooks/useHistogram', () => ({
-  useHistogram: jest.fn(({ theme }) => (
-    [getChartDataFromHistogramItems([{ frequency: 6175, range: '(0-3)' }], theme), true]
-  )),
+  useHistogram: jest.fn(({ theme }) => [
+    getChartDataFromHistogramItems([{ frequency: 6175, range: '(0-3)' }], theme),
+    true,
+  ]),
 }));
 
 const originalConsoleError = console.error;
@@ -2703,7 +2706,7 @@ describe('useFilters::', () => {
   });
 
   it('should render top query when database is postgres and top query exists', () => {
-    const wrapper = mount(
+    const wrapper = render(
       <QueryAnalyticsProvider.Provider
         value={{
           panelState,
@@ -2717,36 +2720,28 @@ describe('useFilters::', () => {
           textMetrics={textMetrics}
           loading={false}
         />
-        ,
       </QueryAnalyticsProvider.Provider>,
     );
 
-    expect(wrapper.find(dataTestId('top-query')).length).toEqual(1);
+    expect(wrapper.queryAllByTestId('top-query').length).toEqual(1);
   });
 
   it('should not render top query when database is not postgres', () => {
-    const wrapper = mount(
+    const wrapper = render(
       <QueryAnalyticsProvider.Provider
         value={{
           panelState,
         }}
       >
-        <Metrics
-          databaseType={Databases.mysql}
-          groupBy="queryid"
-          totals
-          metrics={metrics}
-          loading={false}
-        />
-        ,
+        <Metrics databaseType={Databases.mysql} groupBy="queryid" totals metrics={metrics} loading={false} />
       </QueryAnalyticsProvider.Provider>,
     );
 
-    expect(wrapper.find(dataTestId('top-query')).length).toEqual(0);
+    expect(wrapper.queryAllByTestId('top-query').length).toEqual(0);
   });
 
   it('should not render Histogram when groupBy not equal "queryId" ', async () => {
-    const wrapper = mount(
+    const wrapper = render(
       <QueryAnalyticsProvider.Provider
         value={{
           panelState,
@@ -2760,10 +2755,9 @@ describe('useFilters::', () => {
           textMetrics={textMetrics}
           loading={false}
         />
-        ,
       </QueryAnalyticsProvider.Provider>,
     );
 
-    expect(wrapper.find(dataTestId('histogram-collapse-container')).length).toEqual(0);
+    expect(wrapper.queryAllByTestId('histogram-collapse-container').length).toEqual(0);
   });
 });

@@ -30,7 +30,6 @@ The list of featured dashboards:
 - MySQL Query Response Time Details
 - MySQL Replication Summary
 - MySQL Table Details
-- MySQL TokuDB Details
 - MySQL User Details
 - MySQL Wait Event Analyses Details
 - NUMA Details
@@ -63,10 +62,6 @@ Dashboards can be converted to be used on a dedicated prometheus instance.
 Example:
 
 - misc/convert-dash-from-PMM.py dashboards/Disk_Details.json
-
-## AWS Setup page
-
-Plase see the relevant [README.md](./setup-page/README.md).
 
 ## Contributing
 

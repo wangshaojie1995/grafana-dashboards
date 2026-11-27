@@ -14,11 +14,17 @@
         "matchAny": true,
         "name": "PMM Annotations",
         "showIn": 0,
-        "tags": ["pmm_annotation", "$node_name"],
+        "tags": [
+          "pmm_annotation",
+          "$node_name"
+        ],
         "target": {
           "limit": 100,
           "matchAny": true,
-          "tags": ["pmm_annotation", "$node_name"],
+          "tags": [
+            "pmm_annotation",
+            "$node_name"
+          ],
           "type": "tags"
         },
         "type": "tags"
@@ -49,61 +55,11 @@
   "editable": false,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
-  "links": [
-    {
-      "asDropdown": false,
-      "icon": "doc",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [],
-      "targetBlank": false,
-      "title": "Home",
-      "tooltip": "",
-      "type": "link",
-      "url": "/graph/d/pmm-home/home-dashboard"
-    },
-    {
-      "asDropdown": false,
-      "icon": "dashboard",
-      "includeVars": true,
-      "keepTime": true,
-      "tags": [],
-      "targetBlank": false,
-      "title": "Query Analytics",
-      "tooltip": "",
-      "type": "link",
-      "url": "/graph/d/pmm-qan/pmm-query-analytics"
-    },
-    {
-      "asDropdown": true,
-      "icon": "external link",
-      "includeVars": false,
-      "keepTime": true,
-      "tags": ["Services"],
-      "targetBlank": false,
-      "title": "Services",
-      "tooltip": "",
-      "type": "dashboards",
-      "url": ""
-    },
-    {
-      "asDropdown": true,
-      "icon": "external link",
-      "includeVars": false,
-      "keepTime": true,
-      "tags": ["PMM"],
-      "targetBlank": false,
-      "title": "PMM",
-      "tooltip": "",
-      "type": "dashboards",
-      "url": ""
-    }
-  ],
+  "links": [],
   "liveNow": false,
   "panels": [
     {
       "collapsed": false,
-      "datasource": "Metrics",
       "gridPos": {
         "h": 1,
         "w": 24,
@@ -112,17 +68,13 @@
       },
       "id": 70,
       "panels": [],
-      "targets": [
-        {
-          "datasource": "Metrics",
-          "refId": "A"
-        }
-      ],
       "title": "Overview",
       "type": "row"
     },
     {
-      "datasource": "Metrics",
+      "datasource": {
+        "type": "prometheus"
+      },
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -135,8 +87,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "green"
               }
             ]
           },
@@ -145,38 +96,42 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 6,
+        "h": 4,
+        "w": 12,
         "x": 0,
         "y": 1
       },
       "id": 1059,
       "interval": "$interval",
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "vertical",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 14,
           "valueSize": 24
         },
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
           "editorMode": "code",
           "exemplar": true,
-          "expr": "count(count by (id_service) (label_replace(up{node_name=~\"$node_name\",job=~\"mysql.*\",environment=~\"$environment\"}, \"id_service\", \"$2\", \"job\", \"(.*)_exporter_agent_id_(.*)_(.*)\"))) or vector(0)",
+          "expr": "count(min by (instance) (mysql_up)) or vector(0)",
           "instant": false,
           "interval": "$interval",
           "legendFormat": "MySQL",
@@ -186,7 +141,7 @@
         {
           "datasource": "Metrics",
           "editorMode": "code",
-          "expr": "count(count by (id_service) (label_replace(up{node_name=~\"$node_name\",job=~\"mongodb.*\",environment=~\"$environment\"}, \"id_service\", \"$2\", \"job\", \"(.*)_exporter_agent_id_(.*)_(.*)\"))) or vector(0)",
+          "expr": "count(min by(instance) (mongodb_up)) or vector(0)",
           "hide": false,
           "legendFormat": "MongoDB",
           "range": true,
@@ -195,7 +150,7 @@
         {
           "datasource": "Metrics",
           "editorMode": "code",
-          "expr": "count(count by (id_service) (label_replace(up{node_name=~\"$node_name\",job=~\"postgres.*\",environment=~\"$environment\"}, \"id_service\", \"$2\", \"job\", \"(.*)_exporter_agent_id_(.*)_(.*)\"))) or vector(0)",
+          "expr": "count(min by(instance) (pg_up)) or vector(0)",
           "hide": false,
           "legendFormat": "PostgreSQL",
           "range": true,
@@ -204,11 +159,20 @@
         {
           "datasource": "Metrics",
           "editorMode": "code",
-          "expr": "count(count by (id_service) (label_replace(up{node_name=~\"$node_name\",job=~\"proxysql.*\",environment=~\"$environment\"}, \"id_service\", \"$2\", \"job\", \"(.*)_exporter_agent_id_(.*)_(.*)\"))) or vector(0)",
+          "expr": "count(min by(instance) (proxysql_up)) or vector(0)",
           "hide": false,
           "legendFormat": "ProxySQL",
           "range": true,
           "refId": "D"
+        },
+        {
+          "datasource": "Metrics",
+          "editorMode": "code",
+          "expr": "count(min by(instance) (redis_up)) or vector(0)",
+          "hide": false,
+          "legendFormat": "Valkey",
+          "range": true,
+          "refId": "E"
         }
       ],
       "title": "Monitored DB Services",
@@ -239,8 +203,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#1F60C4",
-                "value": null
+                "color": "#1F60C4"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -256,69 +219,92 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 6,
+        "h": 4,
+        "w": 12,
+        "x": 12,
         "y": 1
       },
       "id": 376,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "center",
         "orientation": "vertical",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 14,
           "valueSize": 24
         },
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
           "editorMode": "code",
-          "expr": "count by (service_type) (group by (service_name, service_type) (mysql_global_status_uptime{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"}))",
+          "exemplar": false,
+          "expr": "count by (service_type) (group by (service_name, service_type) (mysql_global_status_uptime{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"})) or on() vector(0)",
           "format": "time_series",
           "hide": false,
+          "instant": true,
           "intervalFactor": 1,
           "legendFormat": "MySQL",
-          "range": true,
+          "range": false,
           "refId": "A"
         },
         {
           "datasource": "Metrics",
           "editorMode": "code",
-          "expr": "count by (service_type) (group by (service_name, service_type) (mongodb_up{region=~\"$region\",node_type=~\"$node_type\",node_name=~\"$node_name\"}))",
+          "exemplar": false,
+          "expr": "count by (service_type) (group by (service_name, service_type) (mongodb_up{region=~\"$region\",node_type=~\"$node_type\",node_name=~\"$node_name\"})) or on() vector(0)",
           "hide": false,
+          "instant": true,
           "legendFormat": "MongoDB",
-          "range": true,
+          "range": false,
           "refId": "B"
         },
         {
           "datasource": "Metrics",
           "editorMode": "code",
-          "expr": "count by (service_type)  (group by (service_name, service_type) (pg_up{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"}))",
+          "exemplar": false,
+          "expr": "count by (service_type)  (group by (service_name, service_type) (pg_up{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"})) or on() vector(0)",
           "hide": false,
+          "instant": true,
           "legendFormat": "PostgreSQL",
-          "range": true,
+          "range": false,
           "refId": "C"
         },
         {
           "datasource": "Metrics",
           "editorMode": "code",
-          "expr": "count by (service_type)  (group by (service_name, service_type) (proxysql_mysql_status_active_transactions{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"}))",
+          "exemplar": false,
+          "expr": "count by (service_type)  (group by (service_name, service_type) (proxysql_mysql_status_active_transactions{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"})) or on() vector(0)",
           "hide": false,
+          "instant": true,
           "legendFormat": "ProxySQL",
-          "range": true,
+          "range": false,
           "refId": "D"
+        },
+        {
+          "datasource": "Metrics",
+          "editorMode": "code",
+          "exemplar": false,
+          "expr": "count by (service_type) (group by (service_name, service_type) (redis_up{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"})) or on() vector(0) ",
+          "hide": false,
+          "instant": true,
+          "legendFormat": "Valkey",
+          "range": false,
+          "refId": "E"
         }
       ],
       "title": "Monitored DB Instances",
@@ -356,8 +342,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#1F60C4",
-                "value": null
+                "color": "#1F60C4"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -373,10 +358,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 12,
-        "y": 1
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 5
       },
       "id": 326,
       "links": [
@@ -392,17 +377,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 24
         },
-        "textMode": "value"
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -420,289 +410,13 @@
     },
     {
       "datasource": "Metrics",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(31, 120, 193)",
-            "mode": "fixed"
-          },
-          "displayName": "Total Virtual CPUs",
-          "links": [
-            {
-              "targetBlank": true,
-              "title": "Nodes Overview",
-              "url": "/graph/d/node-instance-overview/nodes-overview?$__url_time_range&$__all_variables"
-            }
-          ],
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#1F60C4",
-                "value": null
-              },
-              {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 1000
-              },
-              {
-                "color": "#d44a3a"
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 15,
-        "y": 1
-      },
-      "id": 306,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Nodes Overview",
-          "url": "/graph/d/node-instance-overview/nodes-overview?$__url_time_range&$__all_variables"
-        }
-      ],
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "text": {
-          "valueSize": 25
-        },
-        "textMode": "value"
-      },
-      "pluginVersion": "9.2.20",
-      "targets": [
-        {
-          "datasource": "Metrics",
-          "expr": "(count(node_cpu_seconds_total{node_name=~\"$node_name\",mode=~\"user\",region=~\"$region\",node_type=~\"$node_type\"}) or \n(1-absent(node_cpu_seconds_total{node_name=~\"$node_name\",mode=~\"user\",region=~\"$region\",node_type=~\"$node_type\"}))) + \nsum(rdsosmetrics_General_numVCPUs{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"} or up * 0)",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "refId": "A"
-        }
-      ],
-      "title": "Total Virtual CPUs",
-      "type": "stat"
-    },
-    {
-      "datasource": "Metrics",
-      "description": "RAM (Random Access Memory) is the hardware in a computing device where the operating system, application programs, and data in current use are kept so the device's processor can quickly reach them. ",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(31, 120, 193)",
-            "mode": "fixed"
-          },
-          "decimals": 2,
-          "displayName": "Total RAM",
-          "links": [
-            {
-              "targetBlank": true,
-              "title": "Memory Overview",
-              "url": "/graph/d/node-memory/memory-details?$__url_time_range&var-node_name=$node_name_link"
-            }
-          ],
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#1F60C4",
-                "value": null
-              },
-              {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 1000000000000
-              },
-              {
-                "color": "#299c46"
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 18,
-        "y": 1
-      },
-      "id": 309,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Memory Overview",
-          "url": "/graph/d/node-memory/memory-details?$__url_time_range&var-node_name=$node_name_link"
-        }
-      ],
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "text": {
-          "valueSize": 24
-        },
-        "textMode": "value"
-      },
-      "pluginVersion": "9.2.20",
-      "targets": [
-        {
-          "datasource": "Metrics",
-          "expr": "sum by () (node_memory_MemTotal_bytes{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"})",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Total RAM",
-      "type": "stat"
-    },
-    {
-      "datasource": "Metrics",
-      "description": "",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(31, 120, 193)",
-            "mode": "fixed"
-          },
-          "decimals": 2,
-          "displayName": "Virtual Memory Total",
-          "links": [
-            {
-              "targetBlank": true,
-              "title": "Nodes Overview",
-              "url": "/graph/d/node-instance-overview/nodes-overview?$__url_time_range&$__all_variables"
-            }
-          ],
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "#1F60C4",
-                "value": null
-              },
-              {
-                "color": "rgba(237, 129, 40, 0.89)",
-                "value": 1000000000000
-              },
-              {
-                "color": "#299c46"
-              }
-            ]
-          },
-          "unit": "bytes"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 21,
-        "y": 1
-      },
-      "id": 310,
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "Nodes Overview",
-          "url": "/graph/d/node-instance-overview/nodes-overview?$__url_time_range&$__all_variables"
-        }
-      ],
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "none",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "horizontal",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "text": {
-          "valueSize": 24
-        },
-        "textMode": "value"
-      },
-      "pluginVersion": "9.2.20",
-      "targets": [
-        {
-          "datasource": "Metrics",
-          "expr": "sum by () (node_memory_MemTotal_bytes{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"}+node_memory_SwapTotal_bytes{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"})",
-          "format": "time_series",
-          "intervalFactor": 1,
-          "legendFormat": "",
-          "refId": "A"
-        }
-      ],
-      "title": "Virtual Memory Total",
-      "type": "stat"
-    },
-    {
-      "datasource": "Metrics",
       "description": "Minimal Uptime",
       "fieldConfig": {
         "defaults": {
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 2,
+          "decimals": 1,
           "displayName": "Min Node Uptime",
           "mappings": [
             {
@@ -719,8 +433,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#F2495C",
-                "value": null
+                "color": "#F2495C"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -737,30 +450,34 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 0,
-        "y": 6
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 5
       },
       "id": 375,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 24
         },
-        "textMode": "value"
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -784,7 +501,7 @@
           "color": {
             "mode": "thresholds"
           },
-          "decimals": 2,
+          "decimals": 1,
           "displayName": "Min DB Uptime",
           "mappings": [
             {
@@ -801,8 +518,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#F2495C",
-                "value": null
+                "color": "#F2495C"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -819,30 +535,34 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 3,
-        "x": 3,
-        "y": 6
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 5
       },
       "id": 377,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "value",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 24
         },
-        "textMode": "value"
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -861,6 +581,332 @@
     },
     {
       "datasource": "Metrics",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(31, 120, 193)",
+            "mode": "fixed"
+          },
+          "displayName": "Database Connection",
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 5
+      },
+      "id": 1038,
+      "interval": "$interval",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "MySQL Services Overview $node_name_mysql",
+          "url": "/graph/d/mysql-instance-overview/mysql-instances-overview?$__url_time_range&var-node_name=$node_name_mysql"
+        },
+        {
+          "targetBlank": true,
+          "title": "MongoDB Services Overview $node_name_mongodb",
+          "url": "/graph/d/mongodb-instance-overview/mongodb-instances-overview?$__url_time_range&var-node_name=$node_name_mongodb"
+        },
+        {
+          "targetBlank": true,
+          "title": "PostgreSQL Services Overview $node_name_pg",
+          "url": "/graph/d/postgresql-instance-overview/postgresql-instances-overview?$__url_time_range&var-node_name=$node_name_pg"
+        },
+        {
+          "targetBlank": true,
+          "title": "ProxySQL Instance Summary $node_name_proxysql",
+          "url": "/graph/d/proxysql-instance-summary/proxysql-instance-summary?$__url_time_range&var-node_name=$node_name_proxysql"
+        },
+        {
+          "targetBlank": true,
+          "title": "HAProxy Instance Summary $node_name_haproxy",
+          "url": "/graph/d/haproxy-instance-summary/haproxy-instance-summary?$__url_time_range&var-node_name=$node_name_haproxy"
+        },
+        {
+          "targetBlank": true,
+          "title": "Valkey Overview - $node_name_valkey",
+          "url": "/graph/d/valkey-overview/valkey-redis-overview?$__url_time_range&var-node_name=$node_name_valkey"
+        }
+      ],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 24
+        },
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.6.4",
+      "targets": [
+        {
+          "datasource": "Metrics",
+          "editorMode": "code",
+          "exemplar": true,
+          "expr": "sum by () (sum by (node_name)(mysql_global_status_threads_connected{node_name=~\"$node_name\",environment=~\"$environment\"}[$interval]),\nsum by (node_name)(mongodb_connections{node_name=~\"$node_name\",state=\"current\",environment=~\"$environment\"}[$interval]),\nsum by (node_name) (max_over_time(pg_stat_database_numbackends{node_name=~\"$node_name\",environment=~\"$environment\"}[$interval])),\nsum by (node_name) (proxysql_connection_pool_conn_used{node_name=~\"$node_name\",environment=~\"$environment\"}[$interval]),\nsum by (node_name) (increase(haproxy_frontend_connections_total{node_name=~\"$node_name\",environment=~\"$environment\"}[$interval]),\nsum by (node_name)(redis_connected_clients{node_name=~\"$node_name\",environment=~\"$environment\"}[$interval]))\n)",
+          "hide": false,
+          "interval": "$interval",
+          "legendFormat": "Database connections",
+          "range": true,
+          "refId": "C"
+        }
+      ],
+      "title": "Database Connections",
+      "type": "stat"
+    },
+    {
+      "datasource": "Metrics",
+      "description": "Query per second",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(31, 120, 193)",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "displayName": "Database Query/s (QPS)",
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green"
+              }
+            ]
+          },
+          "unit": "short"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 5
+      },
+      "id": 1040,
+      "interval": "$interval",
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "MySQL Services Overview $node_name_mysql",
+          "url": "/graph/d/mysql-instance-overview/mysql-instances-overview?$__url_time_range&var-node_name=$node_name_mysql"
+        },
+        {
+          "targetBlank": true,
+          "title": "MongoDB Services Overview $node_name_mongodb",
+          "url": "/graph/d/mongodb-instance-overview/mongodb-instances-overview?$__url_time_range&var-node_name=$node_name_mongodb"
+        },
+        {
+          "targetBlank": true,
+          "title": "PostgreSQL Services Overview $node_name_pg",
+          "url": "/graph/d/postgresql-instance-overview/postgresql-instances-overview?$__url_time_range&var-node_name=$node_name_pg"
+        },
+        {
+          "targetBlank": true,
+          "title": "ProxySQL Instance Summary $node_name_proxysql",
+          "url": "/graph/d/proxysql-instance-summary/proxysql-instance-summary?$__url_time_range&var-node_name=$node_name_proxysql"
+        },
+        {
+          "targetBlank": true,
+          "title": "HAProxy Instance Summary $node_name_haproxy",
+          "url": "/graph/d/haproxy-instance-summary/haproxy-instance-summary?$__url_time_range&var-node_name=$node_name_haproxy"
+        },
+        {
+          "targetBlank": true,
+          "title": "Valkey Command Details - $node_name_valkey",
+          "url": "/graph/d/valkey-command-details/valkey-redis-command-detail?$__url_time_range&var-node_name=$node_name_valkey"
+        }
+      ],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 24
+        },
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.6.4",
+      "targets": [
+        {
+          "calculatedInterval": "10m",
+          "datasource": "Metrics",
+          "datasourceErrors": {},
+          "editorMode": "code",
+          "errors": {},
+          "exemplar": true,
+          "expr": "sum by () (\n(rate(mysql_global_status_queries{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) or \nirate(mysql_global_status_queries{node_name=~\"$node_name\",environment=~\"$environment\"}[5m])), \n(rate(mongodb_op_counters_total{node_name=~\"$node_name\",type!=\"command\",environment=~\"$environment\"}[5m]) or \nirate(mongodb_op_counters_total{node_name=~\"$node_name\",type!=\"command\",environment=~\"$environment\"}[5m])),\n((rate(pg_stat_database_xact_commit{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) + \nrate(pg_stat_database_xact_rollback{node_name=~\"$node_name\",environment=~\"$environment\"}[5m])) or\n(irate(pg_stat_database_xact_commit{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) + \nirate(pg_stat_database_xact_rollback{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]))),\n(rate(proxysql_connection_pool_queries{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) or\nirate(proxysql_connection_pool_queries{node_name=~\"$node_name\",environment=~\"$environment\"}[5m])),\n(rate(haproxy_backend_sessions_total{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) or irate(haproxy_backend_sessions_total{node_name=~\"$node_name\",environment=~\"$environment\"}[5m])),\n(rate(redis_commands_total{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) or irate(redis_commands_total{node_name=~\"$node_name\",environment=~\"$environment\"}[5m])))",
+          "format": "time_series",
+          "hide": false,
+          "interval": "$interval",
+          "intervalFactor": 1,
+          "legendFormat": " ",
+          "metric": "node_mem",
+          "range": true,
+          "refId": "A",
+          "step": 300
+        }
+      ],
+      "title": "Database Queries/s (QPS)",
+      "type": "stat"
+    },
+    {
+      "datasource": "Metrics",
+      "description": "RAM (Random Access Memory) is the hardware in a computing device where the operating system, application programs, and data in current use are kept so the device's processor can quickly reach them. ",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(31, 120, 193)",
+            "mode": "fixed"
+          },
+          "decimals": 1,
+          "displayName": "Total RAM",
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Memory Overview",
+              "url": "/graph/d/node-memory/memory-details?$__url_time_range&var-node_name=$node_name_link"
+            }
+          ],
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#1F60C4"
+              },
+              {
+                "color": "rgba(237, 129, 40, 0.89)",
+                "value": 1000000000000
+              },
+              {
+                "color": "#299c46"
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 9
+      },
+      "id": 309,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Memory Overview",
+          "url": "/graph/d/node-memory/memory-details?$__url_time_range&var-node_name=$node_name_link"
+        }
+      ],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 24
+        },
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.6.4",
+      "targets": [
+        {
+          "datasource": "Metrics",
+          "expr": "sum by () (node_memory_MemTotal_bytes{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Total RAM",
+      "type": "stat"
+    },
+    {
+      "datasource": "Metrics",
       "description": "",
       "fieldConfig": {
         "defaults": {
@@ -868,7 +914,104 @@
             "fixedColor": "rgb(31, 120, 193)",
             "mode": "fixed"
           },
-          "decimals": 2,
+          "decimals": 1,
+          "displayName": "Virtual Memory Total",
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Nodes Overview",
+              "url": "/graph/d/node-instance-overview/nodes-overview?$__url_time_range&$__all_variables"
+            }
+          ],
+          "mappings": [
+            {
+              "options": {
+                "match": "null",
+                "result": {
+                  "text": "N/A"
+                }
+              },
+              "type": "special"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "#1F60C4"
+              },
+              {
+                "color": "rgba(237, 129, 40, 0.89)",
+                "value": 1000000000000
+              },
+              {
+                "color": "#299c46"
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 9
+      },
+      "id": 310,
+      "links": [
+        {
+          "targetBlank": true,
+          "title": "Nodes Overview",
+          "url": "/graph/d/node-instance-overview/nodes-overview?$__url_time_range&$__all_variables"
+        }
+      ],
+      "maxDataPoints": 100,
+      "options": {
+        "colorMode": "none",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "text": {
+          "valueSize": 24
+        },
+        "textMode": "value",
+        "wideLayout": true
+      },
+      "pluginVersion": "11.6.4",
+      "targets": [
+        {
+          "datasource": "Metrics",
+          "expr": "sum by () (node_memory_MemTotal_bytes{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"}+node_memory_SwapTotal_bytes{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Virtual Memory Total",
+      "type": "stat"
+    },
+    {
+      "datasource": "Metrics",
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "fixedColor": "rgb(31, 120, 193)",
+            "mode": "fixed"
+          },
+          "decimals": 1,
           "displayName": "Disk Space Total",
           "links": [
             {
@@ -892,8 +1035,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#1F60C4",
-                "value": null
+                "color": "#1F60C4"
               },
               {
                 "color": "rgba(237, 129, 40, 0.89)",
@@ -909,10 +1051,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 6,
-        "y": 6
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 9
       },
       "id": 311,
       "links": [
@@ -928,17 +1070,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 24
         },
-        "textMode": "value"
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -982,8 +1129,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#0a437c",
-                "value": null
+                "color": "#0a437c"
               },
               {
                 "color": "#1f78c1",
@@ -1000,10 +1146,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 6,
         "x": 12,
-        "y": 6
+        "y": 9
       },
       "id": 1036,
       "interval": "$interval",
@@ -1020,17 +1166,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 24
         },
-        "textMode": "value"
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1074,8 +1225,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "#6d1f62",
-                "value": null
+                "color": "#6d1f62"
               },
               {
                 "color": "#962d82",
@@ -1092,10 +1242,10 @@
         "overrides": []
       },
       "gridPos": {
-        "h": 5,
+        "h": 4,
         "w": 6,
         "x": 18,
-        "y": 6
+        "y": 9
       },
       "id": 1034,
       "interval": "$interval",
@@ -1112,17 +1262,22 @@
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 24
         },
-        "textMode": "value"
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1144,7 +1299,14 @@
             "fixedColor": "rgb(31, 120, 193)",
             "mode": "fixed"
           },
-          "displayName": "Database Connection",
+          "displayName": "Total Virtual CPUs",
+          "links": [
+            {
+              "targetBlank": true,
+              "title": "Nodes Overview",
+              "url": "/graph/d/node-instance-overview/nodes-overview?$__url_time_range&$__all_variables"
+            }
+          ],
           "mappings": [
             {
               "options": {
@@ -1160,8 +1322,14 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "green",
-                "value": null
+                "color": "#1F60C4"
+              },
+              {
+                "color": "rgba(237, 129, 40, 0.89)",
+                "value": 1000
+              },
+              {
+                "color": "#d44a3a"
               }
             ]
           },
@@ -1173,136 +1341,14 @@
         "h": 5,
         "w": 6,
         "x": 0,
-        "y": 11
+        "y": 13
       },
-      "id": 1038,
-      "interval": "$interval",
+      "id": 306,
       "links": [
         {
           "targetBlank": true,
-          "title": "MySQL Services Overview $node_name_mysql",
-          "url": "/graph/d/mysql-instance-overview/mysql-instances-overview?$__url_time_range&var-node_name=$node_name_mysql"
-        },
-        {
-          "targetBlank": true,
-          "title": "MongoDB Services Overview $node_name_mongodb",
-          "url": "/graph/d/mongodb-instance-overview/mongodb-instances-overview?$__url_time_range&var-node_name=$node_name_mongodb"
-        },
-        {
-          "targetBlank": true,
-          "title": "PostgreSQL Services Overview $node_name_pg",
-          "url": "/graph/d/postgresql-instance-overview/postgresql-instances-overview?$__url_time_range&var-node_name=$node_name_pg"
-        },
-        {
-          "targetBlank": true,
-          "title": "ProxySQL Instance Summary $node_name_proxysql",
-          "url": "/graph/d/proxysql-instance-summary/proxysql-instance-summary?$__url_time_range&var-node_name=$node_name_proxysql"
-        },
-        {
-          "targetBlank": true,
-          "title": "HAProxy Instance Summary $node_name_haproxy",
-          "url": "/graph/d/haproxy-instance-summary/haproxy-instance-summary?$__url_time_range&var-node_name=$node_name_haproxy"
-        }
-      ],
-      "maxDataPoints": 100,
-      "options": {
-        "colorMode": "value",
-        "graphMode": "area",
-        "justifyMode": "auto",
-        "orientation": "auto",
-        "reduceOptions": {
-          "calcs": ["lastNotNull"],
-          "fields": "",
-          "values": false
-        },
-        "text": {
-          "valueSize": 24
-        },
-        "textMode": "value"
-      },
-      "pluginVersion": "9.2.20",
-      "targets": [
-        {
-          "datasource": "Metrics",
-          "exemplar": true,
-          "expr": "sum by () (sum by (node_name)(mysql_global_status_threads_connected{node_name=~\"$node_name\",environment=~\"$environment\"}[$interval]),\nsum by (node_name)(mongodb_connections{node_name=~\"$node_name\",state=\"current\",environment=~\"$environment\"}[$interval]),\nsum by (node_name) (max_over_time(pg_stat_database_numbackends{node_name=~\"$node_name\",environment=~\"$environment\"}[$interval])),\nsum by (node_name) (proxysql_connection_pool_conn_used{node_name=~\"$node_name\",environment=~\"$environment\"}[$interval]),\nsum by (node_name) (increase(haproxy_frontend_connections_total{node_name=~\"$node_name\",environment=~\"$environment\"}[$interval]))\n)",
-          "hide": false,
-          "interval": "$interval",
-          "legendFormat": "Database connections",
-          "refId": "C"
-        }
-      ],
-      "title": "Database Connection",
-      "type": "stat"
-    },
-    {
-      "datasource": "Metrics",
-      "description": "Query per second",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "fixedColor": "rgb(31, 120, 193)",
-            "mode": "fixed"
-          },
-          "decimals": 2,
-          "displayName": "Database Query/s (QPS)",
-          "mappings": [
-            {
-              "options": {
-                "match": "null",
-                "result": {
-                  "text": "N/A"
-                }
-              },
-              "type": "special"
-            }
-          ],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              }
-            ]
-          },
-          "unit": "short"
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 6,
-        "y": 11
-      },
-      "id": 1040,
-      "interval": "$interval",
-      "links": [
-        {
-          "targetBlank": true,
-          "title": "MySQL Services Overview $node_name_mysql",
-          "url": "/graph/d/mysql-instance-overview/mysql-instances-overview?$__url_time_range&var-node_name=$node_name_mysql"
-        },
-        {
-          "targetBlank": true,
-          "title": "MongoDB Services Overview $node_name_mongodb",
-          "url": "/graph/d/mongodb-instance-overview/mongodb-instances-overview?$__url_time_range&var-node_name=$node_name_mongodb"
-        },
-        {
-          "targetBlank": true,
-          "title": "PostgreSQL Services Overview $node_name_pg",
-          "url": "/graph/d/postgresql-instance-overview/postgresql-instances-overview?$__url_time_range&var-node_name=$node_name_pg"
-        },
-        {
-          "targetBlank": true,
-          "title": "ProxySQL Instance Summary $node_name_proxysql",
-          "url": "/graph/d/proxysql-instance-summary/proxysql-instance-summary?$__url_time_range&var-node_name=$node_name_proxysql"
-        },
-        {
-          "targetBlank": true,
-          "title": "HAProxy Instance Summary $node_name_haproxy",
-          "url": "/graph/d/haproxy-instance-summary/haproxy-instance-summary?$__url_time_range&var-node_name=$node_name_haproxy"
+          "title": "Nodes Overview",
+          "url": "/graph/d/node-instance-overview/nodes-overview?$__url_time_range&$__all_variables"
         }
       ],
       "maxDataPoints": 100,
@@ -1310,73 +1356,70 @@
         "colorMode": "none",
         "graphMode": "area",
         "justifyMode": "auto",
-        "orientation": "auto",
+        "orientation": "horizontal",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
-          "valueSize": 24
+          "valueSize": 25
         },
-        "textMode": "value"
+        "textMode": "value",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
-          "calculatedInterval": "10m",
           "datasource": "Metrics",
-          "datasourceErrors": {},
-          "errors": {},
-          "exemplar": true,
-          "expr": "sum by () (\n(rate(mysql_global_status_queries{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) or \nirate(mysql_global_status_queries{node_name=~\"$node_name\",environment=~\"$environment\"}[5m])), \n(rate(mongodb_op_counters_total{node_name=~\"$node_name\",type!=\"command\",environment=~\"$environment\"}[5m]) or \nirate(mongodb_op_counters_total{node_name=~\"$node_name\",type!=\"command\",environment=~\"$environment\"}[5m])),\n((rate(pg_stat_database_xact_commit{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) + \nrate(pg_stat_database_xact_rollback{node_name=~\"$node_name\",environment=~\"$environment\"}[5m])) or\n(irate(pg_stat_database_xact_commit{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) + \nirate(pg_stat_database_xact_rollback{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]))),\n(rate(proxysql_connection_pool_queries{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) or\nirate(proxysql_connection_pool_queries{node_name=~\"$node_name\",environment=~\"$environment\"}[5m])),\n(rate(haproxy_backend_sessions_total{node_name=~\"$node_name\",environment=~\"$environment\"}[5m]) or irate(haproxy_backend_sessions_total{node_name=~\"$node_name\",environment=~\"$environment\"}[5m])))",
+          "expr": "(count(node_cpu_seconds_total{node_name=~\"$node_name\",mode=~\"user\",region=~\"$region\",node_type=~\"$node_type\"}) or \n(1-absent(node_cpu_seconds_total{node_name=~\"$node_name\",mode=~\"user\",region=~\"$region\",node_type=~\"$node_type\"}))) + \nsum(rdsosmetrics_General_numVCPUs{node_name=~\"$node_name\",region=~\"$region\",node_type=~\"$node_type\"} or up * 0)",
           "format": "time_series",
-          "hide": false,
-          "interval": "$interval",
           "intervalFactor": 1,
-          "legendFormat": " ",
-          "metric": "node_mem",
-          "refId": "A",
-          "step": 300
-        }
-      ],
-      "title": "Database Query/s (QPS)",
-      "type": "stat"
-    },
-    {
-      "datasource": "Metrics",
-      "description": "Display the number of Advisors identified as failed during its most recent run.",
-      "gridPos": {
-        "h": 5,
-        "w": 6,
-        "x": 12,
-        "y": 11
-      },
-      "id": 1042,
-      "links": [],
-      "options": {
-        "title": "Failed Checks"
-      },
-      "targets": [
-        {
-          "datasource": "Metrics",
           "refId": "A"
         }
       ],
+      "title": "Total Virtual CPUs",
+      "type": "stat"
+    },
+    {
+      "description": "Display the number of Advisors identified as failed during its most recent run.",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 6,
+        "x": 6,
+        "y": 13
+      },
+      "id": 1042,
+      "options": {
+        "title": "Failed Checks"
+      },
+      "pluginVersion": "11.6.4",
       "title": "Failed advisors",
       "type": "pmm-check-panel"
     },
     {
       "datasource": "Metrics",
+      "fieldConfig": {
+        "defaults": {},
+        "overrides": []
+      },
       "gridPos": {
         "h": 5,
-        "w": 6,
-        "x": 18,
-        "y": 11
+        "w": 12,
+        "x": 12,
+        "y": 13
       },
-      "height": "120px",
       "id": 1048,
-      "links": [],
+      "options": {},
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1391,21 +1434,14 @@
     },
     {
       "collapsed": false,
-      "datasource": "Metrics",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 16
+        "y": 18
       },
       "id": 1044,
       "panels": [],
-      "targets": [
-        {
-          "datasource": "Metrics",
-          "refId": "A"
-        }
-      ],
       "title": "Anomaly Detection",
       "type": "row"
     },
@@ -1428,13 +1464,12 @@
           "mappings": [],
           "max": 100,
           "min": 60,
-          "noValue": "No CPU change in last 7 days",
+          "noValue": "No CPU changes in last 7 days",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "red",
@@ -1450,27 +1485,31 @@
         "h": 8,
         "w": 9,
         "x": 0,
-        "y": 17
+        "y": 19
       },
       "id": 1028,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 18
         },
-        "textMode": "value_and_name"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1512,8 +1551,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "red",
@@ -1529,28 +1567,32 @@
         "h": 8,
         "w": 15,
         "x": 9,
-        "y": 17
+        "y": 19
       },
       "id": 1026,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 18,
           "valueSize": 18
         },
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1586,13 +1628,12 @@
             }
           ],
           "mappings": [],
-          "noValue": "No disk queue change in last 7 days",
+          "noValue": "No disk queue changes in last 7 days",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "red",
@@ -1600,7 +1641,7 @@
               }
             ]
           },
-          "unit": "s"
+          "unit": "none"
         },
         "overrides": []
       },
@@ -1608,27 +1649,31 @@
         "h": 8,
         "w": 9,
         "x": 0,
-        "y": 25
+        "y": 27
       },
       "id": 1032,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 18
         },
-        "textMode": "value_and_name"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1648,7 +1693,7 @@
     },
     {
       "datasource": "Metrics",
-      "description": "Disk queue size above <XX> requests, regardless of time.",
+      "description": "Disk queue size above <XX> requests, regardless of time. A sustained average queue length > 1 per physical disk is often an indication of device saturation, unless it’s a high-throughput device (like an NVMe SSD) designed for deep queues.",
       "fieldConfig": {
         "defaults": {
           "color": {
@@ -1663,21 +1708,20 @@
             }
           ],
           "mappings": [],
-          "noValue": "Disk queue time is less than 2s",
+          "noValue": "Disk queue size is less than 1",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "red",
-                "value": 2
+                "value": 1
               }
             ]
           },
-          "unit": "s"
+          "unit": "none"
         },
         "overrides": []
       },
@@ -1685,28 +1729,32 @@
         "h": 8,
         "w": 15,
         "x": 9,
-        "y": 25
+        "y": 27
       },
       "id": 1030,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 18,
           "valueSize": 18
         },
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1743,13 +1791,12 @@
             }
           ],
           "mappings": [],
-          "noValue": "No used memory change in last 7 days",
+          "noValue": "No used memory changes in last 7 days",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "red",
@@ -1765,27 +1812,31 @@
         "h": 8,
         "w": 9,
         "x": 0,
-        "y": 33
+        "y": 35
       },
       "id": 1056,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
         "graphMode": "none",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 18
         },
-        "textMode": "value_and_name"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1827,8 +1878,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "red",
@@ -1844,28 +1894,32 @@
         "h": 8,
         "w": 15,
         "x": 9,
-        "y": 33
+        "y": 35
       },
       "id": 1055,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 18,
           "valueSize": 18
         },
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1902,13 +1956,12 @@
           "mappings": [],
           "max": 30,
           "min": 0,
-          "noValue": "No CPU change in last 7 days",
+          "noValue": "No low CPU changes in last 7 days",
           "thresholds": {
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "red",
@@ -1924,27 +1977,31 @@
         "h": 8,
         "w": 9,
         "x": 0,
-        "y": 41
+        "y": 43
       },
       "id": 1058,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "auto",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "valueSize": 24
         },
-        "textMode": "value_and_name"
+        "textMode": "value_and_name",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -1986,8 +2043,7 @@
             "mode": "absolute",
             "steps": [
               {
-                "color": "dark-green",
-                "value": null
+                "color": "dark-green"
               },
               {
                 "color": "red",
@@ -2003,28 +2059,32 @@
         "h": 8,
         "w": 15,
         "x": 9,
-        "y": 41
+        "y": 43
       },
       "id": 1057,
-      "links": [],
       "maxDataPoints": 100,
       "options": {
         "colorMode": "background",
         "graphMode": "area",
         "justifyMode": "center",
         "orientation": "auto",
+        "percentChangeColorMode": "standard",
         "reduceOptions": {
-          "calcs": ["lastNotNull"],
+          "calcs": [
+            "lastNotNull"
+          ],
           "fields": "",
           "values": false
         },
+        "showPercentChange": false,
         "text": {
           "titleSize": 18,
           "valueSize": 18
         },
-        "textMode": "auto"
+        "textMode": "auto",
+        "wideLayout": true
       },
-      "pluginVersion": "9.2.20",
+      "pluginVersion": "11.6.4",
       "targets": [
         {
           "datasource": "Metrics",
@@ -2044,12 +2104,11 @@
     },
     {
       "collapsed": true,
-      "datasource": "Metrics",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 49
+        "y": 51
       },
       "id": 49,
       "panels": [
@@ -2062,11 +2121,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -2075,6 +2136,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -2118,23 +2180,27 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 47
+            "y": 50
           },
           "id": 62,
-          "links": [],
           "options": {
             "legend": {
-              "calcs": ["lastNotNull", "max", "min"],
+              "calcs": [
+                "lastNotNull",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -2160,11 +2226,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "bars",
                 "fillOpacity": 100,
                 "gradientMode": "opacity",
@@ -2173,6 +2241,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -2217,13 +2286,15 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 47
+            "y": 50
           },
           "id": 1003,
-          "links": [],
           "options": {
             "legend": {
-              "calcs": ["lastNotNull", "max"],
+              "calcs": [
+                "lastNotNull",
+                "max"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true,
@@ -2231,11 +2302,12 @@
               "sortDesc": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "9.1.2",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -2262,11 +2334,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -2275,6 +2349,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 5,
@@ -2319,23 +2394,27 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 47
+            "y": 50
           },
           "id": 1004,
-          "links": [],
           "options": {
             "legend": {
-              "calcs": ["lastNotNull", "max", "min"],
+              "calcs": [
+                "lastNotNull",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -2361,11 +2440,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -2374,6 +2455,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 4,
@@ -2416,23 +2498,27 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 56
+            "y": 70
           },
           "id": 1006,
-          "links": [],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "calculatedInterval": "2m",
@@ -2466,11 +2552,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "bars",
                 "fillOpacity": 100,
                 "gradientMode": "opacity",
@@ -2479,6 +2567,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
                 "pointSize": 4,
@@ -2522,23 +2611,27 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 56
+            "y": 70
           },
           "id": 1008,
-          "links": [],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "calculatedInterval": "2m",
@@ -2572,11 +2665,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -2585,6 +2680,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 4,
@@ -2632,23 +2728,27 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 56
+            "y": 70
           },
           "id": 1007,
-          "links": [],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "calculatedInterval": "2m",
@@ -2683,11 +2783,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -2696,6 +2798,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 4,
@@ -2742,7 +2845,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 65
+            "y": 79
           },
           "id": 1010,
           "links": [
@@ -2754,17 +2857,22 @@
           ],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -2792,11 +2900,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "bars",
                 "fillOpacity": 100,
                 "gradientMode": "opacity",
@@ -2805,6 +2915,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
                 "pointSize": 4,
@@ -2848,7 +2959,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 65
+            "y": 79
           },
           "id": 1012,
           "links": [
@@ -2860,17 +2971,22 @@
           ],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -2897,11 +3013,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -2910,6 +3028,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 4,
@@ -2953,7 +3072,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 65
+            "y": 79
           },
           "id": 1011,
           "links": [
@@ -2965,17 +3084,22 @@
           ],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -3004,11 +3128,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -3017,6 +3143,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 4,
@@ -3059,7 +3186,7 @@
             "h": 9,
             "w": 8,
             "x": 0,
-            "y": 74
+            "y": 88
           },
           "id": 1013,
           "links": [
@@ -3071,17 +3198,22 @@
           ],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -3109,11 +3241,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "bars",
                 "fillOpacity": 100,
                 "gradientMode": "opacity",
@@ -3122,6 +3256,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 2,
                 "pointSize": 4,
@@ -3165,7 +3300,7 @@
             "h": 9,
             "w": 8,
             "x": 8,
-            "y": 74
+            "y": 88
           },
           "id": 1014,
           "links": [
@@ -3177,17 +3312,22 @@
           ],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -3215,11 +3355,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 0,
                 "gradientMode": "none",
@@ -3228,6 +3370,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 4,
@@ -3271,7 +3414,7 @@
             "h": 9,
             "w": 8,
             "x": 16,
-            "y": 74
+            "y": 88
           },
           "id": 1015,
           "links": [
@@ -3283,17 +3426,22 @@
           ],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -3322,11 +3470,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 20,
                 "gradientMode": "none",
@@ -3335,6 +3485,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 4,
@@ -3376,23 +3527,27 @@
             "h": 8,
             "w": 8,
             "x": 0,
-            "y": 83
+            "y": 97
           },
           "id": 1016,
-          "links": [],
           "options": {
             "legend": {
-              "calcs": ["lastNotNull", "max", "min"],
+              "calcs": [
+                "lastNotNull",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "calculatedInterval": "2s",
@@ -3427,11 +3582,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "bars",
                 "fillOpacity": 100,
                 "gradientMode": "opacity",
@@ -3440,6 +3597,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineStyle": {
                   "fill": "solid"
@@ -3485,13 +3643,16 @@
             "h": 8,
             "w": 8,
             "x": 8,
-            "y": 83
+            "y": 97
           },
           "id": 1017,
-          "links": [],
           "options": {
             "legend": {
-              "calcs": ["lastNotNull", "max", "min"],
+              "calcs": [
+                "lastNotNull",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true,
@@ -3499,11 +3660,12 @@
               "sortDesc": false
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "9.1.2",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "calculatedInterval": "2s",
@@ -3566,11 +3728,13 @@
                 "mode": "palette-classic"
               },
               "custom": {
+                "axisBorderShow": false,
                 "axisCenteredZero": false,
                 "axisColorMode": "text",
                 "axisLabel": "",
                 "axisPlacement": "auto",
                 "barAlignment": 0,
+                "barWidthFactor": 0.6,
                 "drawStyle": "line",
                 "fillOpacity": 20,
                 "gradientMode": "none",
@@ -3579,6 +3743,7 @@
                   "tooltip": false,
                   "viz": false
                 },
+                "insertNulls": false,
                 "lineInterpolation": "linear",
                 "lineWidth": 1,
                 "pointSize": 4,
@@ -3621,23 +3786,27 @@
             "h": 8,
             "w": 8,
             "x": 16,
-            "y": 83
+            "y": 97
           },
           "id": 1018,
-          "links": [],
           "options": {
             "legend": {
-              "calcs": ["mean", "max", "min"],
+              "calcs": [
+                "mean",
+                "max",
+                "min"
+              ],
               "displayMode": "table",
               "placement": "bottom",
               "showLegend": true
             },
             "tooltip": {
+              "hideZeros": false,
               "mode": "single",
               "sort": "none"
             }
           },
-          "pluginVersion": "8.3.10",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "calculatedInterval": "2s",
@@ -3665,23 +3834,16 @@
           "type": "timeseries"
         }
       ],
-      "targets": [
-        {
-          "datasource": "Metrics",
-          "refId": "A"
-        }
-      ],
       "title": "COMMAND CENTER",
       "type": "row"
     },
     {
       "collapsed": true,
-      "datasource": "Metrics",
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 50
+        "y": 52
       },
       "id": 1054,
       "panels": [
@@ -3692,7 +3854,9 @@
             "defaults": {
               "custom": {
                 "align": "auto",
-                "displayMode": "auto",
+                "cellOptions": {
+                  "type": "auto"
+                },
                 "inspect": false,
                 "minWidth": 110
               },
@@ -3702,8 +3866,7 @@
                 "mode": "percentage",
                 "steps": [
                   {
-                    "color": "green",
-                    "value": null
+                    "color": "green"
                   },
                   {
                     "color": "red",
@@ -3829,8 +3992,10 @@
                     "value": "s"
                   },
                   {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   },
                   {
                     "id": "thresholds",
@@ -3838,8 +4003,7 @@
                       "mode": "absolute",
                       "steps": [
                         {
-                          "color": "red",
-                          "value": null
+                          "color": "red"
                         },
                         {
                           "color": "yellow",
@@ -3909,8 +4073,10 @@
                     ]
                   },
                   {
-                    "id": "custom.displayMode",
-                    "value": "color-text"
+                    "id": "custom.cellOptions",
+                    "value": {
+                      "type": "color-text"
+                    }
                   }
                 ]
               },
@@ -3972,14 +4138,20 @@
           },
           "id": 1052,
           "options": {
+            "cellHeight": "sm",
             "footer": {
-              "fields": ["Value #A"],
-              "reducer": ["count"],
+              "countRows": false,
+              "fields": [
+                "Value #A"
+              ],
+              "reducer": [
+                "count"
+              ],
               "show": true
             },
             "showHeader": true
           },
-          "pluginVersion": "9.2.20",
+          "pluginVersion": "11.6.1",
           "targets": [
             {
               "datasource": "Metrics",
@@ -4113,6 +4285,7 @@
               "refId": "O"
             }
           ],
+          "title": "",
           "transformations": [
             {
               "id": "merge",
@@ -4167,45 +4340,27 @@
           "type": "table"
         }
       ],
-      "targets": [
-        {
-          "datasource": "Metrics",
-          "refId": "A"
-        }
-      ],
       "title": "Service Summary",
       "type": "row"
     }
   ],
+  "preload": false,
   "refresh": "1m",
-  "schemaVersion": 37,
-  "style": "dark",
-  "tags": ["Percona"],
+  "schemaVersion": 41,
+  "tags": [],
   "templating": {
     "list": [
       {
-        "allFormat": "glob",
         "auto": true,
         "auto_count": 200,
         "auto_min": "1s",
         "current": {
-          "selected": false,
-          "text": "auto",
-          "value": "$__auto_interval_interval"
+          "text": "$__auto",
+          "value": "$__auto"
         },
-        "datasource": "Metrics",
-        "hide": 0,
-        "includeAll": false,
         "label": "Interval",
-        "multi": false,
-        "multiFormat": "glob",
         "name": "interval",
         "options": [
-          {
-            "selected": true,
-            "text": "auto",
-            "value": "$__auto_interval_interval"
-          },
           {
             "selected": false,
             "text": "1s",
@@ -4243,53 +4398,43 @@
           }
         ],
         "query": "1s,5s,1m,5m,1h,6h,1d",
-        "queryValue": "",
         "refresh": 2,
-        "skipUrlSync": false,
         "type": "interval"
       },
       {
         "allValue": ".*",
         "current": {
-          "selected": true,
-          "text": ["All"],
-          "value": ["$__all"]
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
         },
-        "datasource": "Metrics",
-        "definition": "label_values({__name__=~\"pg_up|mysql_up|mongodb_up|proxysql_mysql_status_active_transactions\"}, environment)",
-        "hide": 0,
+        "definition": "label_values({__name__=~\"pg_up|mysql_up|mongodb_up|proxysql_mysql_status_active_transactions|redis_up\"},environment)",
         "includeAll": true,
         "label": "Environment",
         "multi": true,
         "name": "environment",
         "options": [],
         "query": {
-          "query": "label_values({__name__=~\"pg_up|mysql_up|mongodb_up|proxysql_mysql_status_active_transactions\"}, environment)",
-          "refId": "Metrics-environment-Variable-Query"
+          "qryType": 1,
+          "query": "label_values({__name__=~\"pg_up|mysql_up|mongodb_up|proxysql_mysql_status_active_transactions|redis_up\"},environment)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
-        "allFormat": "glob",
         "current": {
-          "selected": true,
-          "text": ["All"],
-          "value": ["$__all"]
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
         },
-        "datasource": "Metrics",
         "definition": "label_values(up{environment=~\"$environment\"}, node_name)",
-        "hide": 0,
         "includeAll": true,
         "label": "Node Names",
         "multi": true,
-        "multiFormat": "regex values",
         "name": "node_name",
         "options": [],
         "query": {
@@ -4297,21 +4442,16 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
-        "refresh_on_load": false,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
         "allValue": ".*",
         "current": {
-          "selected": true,
-          "text": ["All"],
-          "value": ["$__all"]
+          "text": "All",
+          "value": "$__all"
         },
-        "datasource": "Metrics",
         "definition": "label_values(node_load1{node_type=~\"generic|remote_rds|container|remote\"}, region)",
         "hide": 2,
         "includeAll": true,
@@ -4325,17 +4465,15 @@
         },
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
-          "text": ["All"],
-          "value": ["$__all"]
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
         },
-        "datasource": "Metrics",
         "definition": "label_values(up{region=~\"$region\"}, node_type)",
         "hide": 2,
         "includeAll": true,
@@ -4349,18 +4487,16 @@
         },
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
-        "sort": 0,
         "type": "query"
       },
       {
         "current": {
-          "selected": true,
-          "text": ["All"],
-          "value": ["$__all"]
+          "text": "All",
+          "value": [
+            "$__all"
+          ]
         },
-        "datasource": "Metrics",
-        "definition": "label_values({__name__=~\"pg_up|mysql_up|mongodb_up|up\",node_name=~\"$node_name\"}, service_name)",
+        "definition": "label_values({__name__=~\"pg_up|mysql_up|mongodb_up|up|redis_up\", node_name=~\"$node_name\"},service_name)",
         "hide": 2,
         "includeAll": true,
         "label": "Service Name",
@@ -4368,29 +4504,23 @@
         "name": "service_name",
         "options": [],
         "query": {
-          "query": "label_values({__name__=~\"pg_up|mysql_up|mongodb_up|up\",node_name=~\"$node_name\"}, service_name)",
-          "refId": "StandardVariableQuery"
+          "qryType": 1,
+          "query": "label_values({__name__=~\"pg_up|mysql_up|mongodb_up|up|redis_up\", node_name=~\"$node_name\"},service_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
         },
         "refresh": 2,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 5,
         "type": "query"
       },
       {
-        "allFormat": "glob",
         "current": {
-          "selected": false,
           "text": "",
           "value": ""
         },
-        "datasource": "Metrics",
         "definition": "label_values(mysql_up{node_name=~\"$node_name\"}, node_name)",
         "hide": 2,
         "includeAll": false,
-        "label": "",
-        "multi": false,
-        "multiFormat": "regex values",
         "name": "node_name_mysql",
         "options": [],
         "query": {
@@ -4398,27 +4528,18 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
-        "refresh_on_load": false,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
-        "allFormat": "glob",
         "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
+          "text": "pmm-server",
+          "value": "pmm-server"
         },
-        "datasource": "Metrics",
         "definition": "label_values(pg_up{node_name=~\"$node_name\"}, node_name)",
         "hide": 2,
         "includeAll": false,
-        "label": "",
-        "multi": false,
-        "multiFormat": "regex values",
         "name": "node_name_pg",
         "options": [],
         "query": {
@@ -4426,27 +4547,18 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
-        "refresh_on_load": false,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
-        "allFormat": "glob",
         "current": {
-          "selected": false,
           "text": "",
           "value": ""
         },
-        "datasource": "Metrics",
         "definition": "label_values(mongodb_up{node_name=~\"$node_name\"}, node_name)",
         "hide": 2,
         "includeAll": false,
-        "label": "",
-        "multi": false,
-        "multiFormat": "regex values",
         "name": "node_name_mongodb",
         "options": [],
         "query": {
@@ -4454,27 +4566,18 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
-        "refresh_on_load": false,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
-        "allFormat": "glob",
         "current": {
-          "selected": false,
           "text": "",
           "value": ""
         },
-        "datasource": "Metrics",
         "definition": "label_values(proxysql_mysql_status_active_transactions{node_name=~\"$node_name\"}, node_name)",
         "hide": 2,
         "includeAll": false,
-        "label": "",
-        "multi": false,
-        "multiFormat": "regex values",
         "name": "node_name_proxysql",
         "options": [],
         "query": {
@@ -4482,27 +4585,18 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
-        "refresh_on_load": false,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
-        "allFormat": "glob",
         "current": {
-          "selected": false,
           "text": "",
           "value": ""
         },
-        "datasource": "Metrics",
         "definition": "label_values(haproxy_process_start_time_seconds{node_name=~\"$node_name\"}, node_name)",
         "hide": 2,
         "includeAll": false,
-        "label": "",
-        "multi": false,
-        "multiFormat": "regex values",
         "name": "node_name_haproxy",
         "options": [],
         "query": {
@@ -4510,27 +4604,35 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
-        "refresh_on_load": false,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "type": "query",
-        "useTags": false
+        "type": "query"
       },
       {
-        "allFormat": "glob",
+        "allowCustomValue": false,
         "current": {
-          "selected": false,
-          "text": "",
-          "value": ""
+          "text": "All",
+          "value": "$__all"
         },
-        "datasource": "Metrics",
+        "definition": "label_values(redis_instance_info{node_name=~\"$node_name\"},node_name)",
+        "hide": 2,
+        "includeAll": false,
+        "name": "node_name_valkey",
+        "options": [],
+        "query": {
+          "qryType": 1,
+          "query": "label_values(redis_instance_info{node_name=~\"$node_name\"},node_name)",
+          "refId": "PrometheusVariableQueryEditor-VariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
         "definition": "label_values(up{node_name=~\"$node_name\"}, node_name)",
         "hide": 2,
         "includeAll": false,
-        "label": "",
-        "multi": false,
-        "multiFormat": "regex values",
         "name": "node_name_link",
         "options": [],
         "query": {
@@ -4538,12 +4640,9 @@
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
-        "refresh_on_load": false,
         "regex": "",
-        "skipUrlSync": false,
         "sort": 1,
-        "type": "query",
-        "useTags": false
+        "type": "query"
       }
     ]
   },
@@ -4551,31 +4650,9 @@
     "from": "now-12h",
     "to": "now"
   },
-  "timepicker": {
-    "collapse": false,
-    "enable": true,
-    "hidden": false,
-    "notice": false,
-    "now": true,
-    "refresh_intervals": [
-      "5s",
-      "10s",
-      "30s",
-      "1m",
-      "5m",
-      "15m",
-      "30m",
-      "1h",
-      "2h",
-      "1d"
-    ],
-    "status": "Stable",
-    "time_options": ["5m", "15m", "1h", "6h", "12h", "24h", "2d", "7d", "30d"],
-    "type": "timepicker"
-  },
+  "timepicker": {},
   "timezone": "",
   "title": "Home Dashboard",
   "uid": "pmm-home",
-  "version": 1,
-  "weekStart": ""
+  "version": 1
 }

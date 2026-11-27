@@ -1,4 +1,6 @@
+import { SERVICE_ID_PREFIX } from 'shared/core';
 import PostgresqlDatabaseService from './service';
+import { stripPrefix } from '../utils';
 
 export const postgresqlMethods = {
   getShowCreateTables: async ({ example, tableName, database }) => {
@@ -8,11 +10,11 @@ export const postgresqlMethods = {
 
     const result = await PostgresqlDatabaseService.getShowCreateTablePostgreSQL({
       table_name: tableName,
-      service_id: example.service_id,
+      service_id: stripPrefix(example.service_id, SERVICE_ID_PREFIX),
       database,
     });
 
-    return result.action_id;
+    return result.postgresql_show_create_table.action_id;
   },
   getIndexes: async ({ example, tableName, database }) => {
     if (!tableName) {
@@ -21,10 +23,10 @@ export const postgresqlMethods = {
 
     const result = await PostgresqlDatabaseService.getPostgreSQLIndex({
       table_name: tableName,
-      service_id: example.service_id,
+      service_id: stripPrefix(example.service_id, SERVICE_ID_PREFIX),
       database,
     });
 
-    return result.action_id;
+    return result.postgresql_show_index.action_id;
   },
 };

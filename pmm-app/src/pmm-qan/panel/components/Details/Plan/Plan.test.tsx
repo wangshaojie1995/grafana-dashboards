@@ -6,6 +6,10 @@ jest.mock('shared/components/helpers/notification-manager');
 jest.mock('./Plan.hooks');
 
 describe('Plan::', () => {
+  beforeEach(() => {
+    console.error = jest.fn();
+  });
+
   it('renders plan query and tooltip', () => {
     const { container } = render(<Plan />);
 

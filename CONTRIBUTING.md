@@ -41,27 +41,10 @@ That environment bundles a number of tools to help you populate the panels with 
 ```
 cd pmm-app
 docker-compose up -d
-npm run dev
+yarn dev
 ```
 
-For a much simpler development environment you could create a local file `docker-compose.local.yml` inside of `pmm-app` folder:
-
-```yml
-version: "3"
-services:
-  pmm-server:
-    container_name: pmm-server
-    image: percona/pmm-server:2
-    environment:
-      - ENABLE_DBAAS=1
-      - ENABLE_BACKUP_MANAGEMENT=1
-      - ENABLE_ALERTING=1
-    volumes:
-      - ./dist:/srv/grafana/plugins/pmm-app/dist
-    ports:
-      - 80:80
-    restart: always
-```
+For a much simpler development environment you could run `docker compose up -d pmm-server` just to start setup the PMM server inside of `pmm-app` folder.
 
 Please note, that we map the `./pmm-app/dist` folder as a subfolder of `/var/lib/grafana/plugins` so that front-end artifacts,
 i.e. panels and dashboards, can be picked up by grafana server running in the docker container.
@@ -71,7 +54,7 @@ Then to run it:
 ```bash
 cd pmm-app
 docker-compose -f ./docker-compose.local.yml up -d
-npm run dev
+yarn dev
 ```
 
 ## Submitting a Pull Request
